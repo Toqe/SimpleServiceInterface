@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleServiceInterface.Contract", "SimpleServiceInterface.Contract\SimpleServiceInterface.Contract.csproj", "{5B71A3C9-B6E2-4690-8D79-94BBF06B39BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleServiceInterface.Server", "SimpleServiceInterface.Server\SimpleServiceInterface.Server.csproj", "{34D49D80-DA94-457D-8312-475387283B70}"
@@ -8,6 +10,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleServiceInterface.Client", "SimpleServiceInterface.Client\SimpleServiceInterface.Client.csproj", "{DF0DE582-6F4A-47F5-B946-6D76C6333F8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleServiceInterface.Server.Owin", "SimpleServiceInterface.Server.Owin\SimpleServiceInterface.Server.Owin.csproj", "{31FBF776-DBED-46D6-856E-77C0941F2C59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{6C2DE868-63E5-490B-B1D6-C54C9656C27F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleService.Contract", "Demo\SampleService.Contract\SampleService.Contract.csproj", "{469258E2-7612-4449-9E54-0A8737F88534}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleService", "Demo\SampleService\SampleService.csproj", "{FDFDE76A-E57B-4692-A7CE-460F194049B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleService.Client", "Demo\SampleService.Client\SampleService.Client.csproj", "{43CAC9CD-CDAA-40FB-B6A8-3D74C04DBCE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleService.WebhostedServer", "Demo\SampleService.WebhostedServer\SampleService.WebhostedServer.csproj", "{6CDE4E3D-56E7-43DD-A037-B542CE7D61A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleService.SelfhostedServer", "Demo\SampleService.SelfhostedServer\SampleService.SelfhostedServer.csproj", "{289E878C-B976-4966-A7B6-3892EF24467F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,8 +45,35 @@ Global
 		{31FBF776-DBED-46D6-856E-77C0941F2C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31FBF776-DBED-46D6-856E-77C0941F2C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31FBF776-DBED-46D6-856E-77C0941F2C59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{469258E2-7612-4449-9E54-0A8737F88534}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{469258E2-7612-4449-9E54-0A8737F88534}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{469258E2-7612-4449-9E54-0A8737F88534}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{469258E2-7612-4449-9E54-0A8737F88534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDFDE76A-E57B-4692-A7CE-460F194049B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDFDE76A-E57B-4692-A7CE-460F194049B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDFDE76A-E57B-4692-A7CE-460F194049B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDFDE76A-E57B-4692-A7CE-460F194049B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43CAC9CD-CDAA-40FB-B6A8-3D74C04DBCE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43CAC9CD-CDAA-40FB-B6A8-3D74C04DBCE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43CAC9CD-CDAA-40FB-B6A8-3D74C04DBCE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43CAC9CD-CDAA-40FB-B6A8-3D74C04DBCE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CDE4E3D-56E7-43DD-A037-B542CE7D61A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CDE4E3D-56E7-43DD-A037-B542CE7D61A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CDE4E3D-56E7-43DD-A037-B542CE7D61A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CDE4E3D-56E7-43DD-A037-B542CE7D61A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{289E878C-B976-4966-A7B6-3892EF24467F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{289E878C-B976-4966-A7B6-3892EF24467F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{289E878C-B976-4966-A7B6-3892EF24467F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{289E878C-B976-4966-A7B6-3892EF24467F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{469258E2-7612-4449-9E54-0A8737F88534} = {6C2DE868-63E5-490B-B1D6-C54C9656C27F}
+		{FDFDE76A-E57B-4692-A7CE-460F194049B4} = {6C2DE868-63E5-490B-B1D6-C54C9656C27F}
+		{43CAC9CD-CDAA-40FB-B6A8-3D74C04DBCE7} = {6C2DE868-63E5-490B-B1D6-C54C9656C27F}
+		{6CDE4E3D-56E7-43DD-A037-B542CE7D61A2} = {6C2DE868-63E5-490B-B1D6-C54C9656C27F}
+		{289E878C-B976-4966-A7B6-3892EF24467F} = {6C2DE868-63E5-490B-B1D6-C54C9656C27F}
 	EndGlobalSection
 EndGlobal

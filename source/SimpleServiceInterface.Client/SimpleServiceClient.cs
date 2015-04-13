@@ -12,7 +12,7 @@ namespace SimpleServiceInterface.Client
     {
         private readonly ProxyGenerator generator = new ProxyGenerator();
 
-        private readonly JsonSerializer jsonSerializer = new JsonSerializer();
+        private readonly JsonSerializer jsonSerializer = new JsonSerializer() { TypeNameHandling = TypeNameHandling.All };
 
         public SimpleServiceClient()
         {

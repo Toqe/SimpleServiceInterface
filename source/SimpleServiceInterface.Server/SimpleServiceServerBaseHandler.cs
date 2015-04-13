@@ -14,7 +14,7 @@ namespace SimpleServiceInterface.Server
 
         protected readonly Encoding encoding = Encoding.UTF8;
 
-        protected readonly JsonSerializer jsonSerializer = new JsonSerializer();
+        protected readonly JsonSerializer jsonSerializer = new JsonSerializer() { TypeNameHandling = TypeNameHandling.Auto };
 
         protected readonly Func<string, Type> typeFinder;
 
