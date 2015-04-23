@@ -28,11 +28,13 @@ namespace SampleService.Client
 
             var result = instance.SayMyName("Tobias");
             var result2 = instance.SayHelloWorld();
-            var result3 = instance.Get();
+            var result3 = instance.GetMany();
+            var result4 = instance.Get();
 
             Console.WriteLine(result);
             Console.WriteLine(result2);
-            Console.WriteLine(result3);
+            Console.WriteLine(string.Join(", ", result3));
+            Console.WriteLine(result4);
             Console.ReadLine();
         }
     }

@@ -14,6 +14,8 @@ namespace SampleService.Contract
 
         string SayMyName(string name);
 
+        IEnumerable<string> GetMany();
+
         SampleType Get();
     }
 }
