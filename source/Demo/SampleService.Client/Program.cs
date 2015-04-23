@@ -28,9 +28,10 @@ namespace SampleService.Client
 
             var result = instance.SayMyName("Tobias");
             var result2 = instance.SayHelloWorld();
-            var result3 = instance.Get();
+            var result3 = instance.GetMany();
+            var result4 = instance.Get();
 
-            Exception result4 = null;
+            Exception result5 = null;
 
             try
             {
@@ -38,13 +39,14 @@ namespace SampleService.Client
             }
             catch (Exception ex)
             {
-                result4 = ex;
+                result5 = ex;
             }
 
             Console.WriteLine(result);
             Console.WriteLine(result2);
-            Console.WriteLine(result3);
+            Console.WriteLine(string.Join(", ", result3));
             Console.WriteLine(result4);
+            Console.WriteLine(result5);
             Console.ReadLine();
         }
     }

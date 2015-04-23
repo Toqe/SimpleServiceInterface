@@ -24,6 +24,11 @@ namespace SampleService
             return string.Format("hello {0}", name);
         }
 
+        public IEnumerable<string> GetMany()
+        {
+            return new List<string>() { "a", "b", "c", "d" };
+        }
+
         public SampleType Get()
         {
             return new SampleType()
