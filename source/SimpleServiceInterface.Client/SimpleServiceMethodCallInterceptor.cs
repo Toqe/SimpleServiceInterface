@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,15 +48,50 @@ namespace SimpleServiceInterface.Client
                 request.ContentLength = 0;
             }
 
-            var response = (HttpWebResponse)request.GetResponse();
-
-            if (method.ReturnType != typeof(void))
+            try
             {
-                using (var streamReader = new StreamReader(response.GetResponseStream()))
+                var response = (HttpWebResponse)request.GetResponse();
+
+                if (method.ReturnType != typeof(void))
                 {
-                    var result = this.jsonSerializer.Deserialize(streamReader, method.ReturnType);
-                    invocation.ReturnValue = result;
+                    using (var streamReader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var result = this.jsonSerializer.Deserialize(streamReader, method.ReturnType);
+                        invocation.ReturnValue = result;
+                    }
                 }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response != null && ex.Response is HttpWebResponse)
+                {
+                    var response = ex.Response as HttpWebResponse;
+
+                    if (response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        Exception deserializedException = null;
+
+                        try
+                        {
+                            using (var streamReader = new StreamReader(response.GetResponseStream()))
+                            {
+                                deserializedException = this.jsonSerializer.Deserialize(streamReader, typeof(Exception)) as Exception;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // do nothing - throw first exception
+                        }
+
+                        if (deserializedException != null)
+                        {
+                            deserializedException.Data.Add("__SimpleServiceInterface__OriginalStackTrace__", deserializedException.StackTrace);
+                            throw deserializedException;
+                        }
+                    }
+                }
+
+                throw;
             }
         }
     }

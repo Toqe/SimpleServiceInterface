@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace SimpleServiceInterface.Server
 
         protected readonly Encoding encoding = Encoding.UTF8;
 
-        protected readonly JsonSerializer jsonSerializer = new JsonSerializer() { TypeNameHandling = TypeNameHandling.Auto };
+        protected readonly JsonSerializer jsonSerializer = new JsonSerializer() { TypeNameHandling = TypeNameHandling.All };
 
         protected readonly Func<string, Type> typeFinder;
 
@@ -96,9 +98,23 @@ namespace SimpleServiceInterface.Server
                 }
             }
 
-            var resultValue = method.Invoke(instance, parameterValues);
             result.Found = true;
-            result.Result = resultValue;
+
+            try
+            {
+                var resultValue = method.Invoke(instance, parameterValues);
+                result.Result = resultValue;
+            }
+            catch (TargetInvocationException ex)
+            {
+                result.ExceptionThrown = true;
+                result.Exception = ex.InnerException;
+            }
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
             return result;
         }
     }

@@ -15,5 +15,9 @@ namespace SampleService.Contract
         string SayMyName(string name);
 
         SampleType Get();
+
+        IQueryable<SampleType> GetAll();
+
+        void GetWithException();
     }
 }

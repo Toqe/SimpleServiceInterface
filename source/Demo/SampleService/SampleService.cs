@@ -34,5 +34,15 @@ namespace SampleService
                 Id2 = Guid.NewGuid()
             };
         }
+
+        public IQueryable<SampleType> GetAll()
+        {
+            return new List<SampleType>() { new SampleType() { Id = 1 }, new SampleType() { Id = 2 }, new SampleType() { Id = 3 } }.AsQueryable();
+        }
+
+        public void GetWithException()
+        {
+            throw new ArgumentException("You supplied no arguments!");
+        }
     }
 }

@@ -37,11 +37,19 @@ namespace SimpleServiceInterface.Server.Owin
                 return this.ReturnNotFound(response);
             }
 
+            response.ContentType = this.contentType;
             var resultValue = result.Result;
 
-            response.StatusCode = 200;
-            response.ContentType = this.contentType;
-
+            if (!result.ExceptionThrown)
+            {
+                response.StatusCode = 200;
+            }
+            else
+            {
+                response.StatusCode = 500;
+                resultValue = result.Exception;
+            }
+            
             using (var memoryStream = new MemoryStream())
             {
                 using (var streamWriter = new StreamWriter(memoryStream, encoding))
@@ -63,7 +71,7 @@ namespace SimpleServiceInterface.Server.Owin
 
         private Task ReturnError(IOwinResponse response, string statusDescription = null)
         {
-            response.StatusCode = 500;
+            response.StatusCode = 501;
             response.ReasonPhrase = statusDescription;
             return response.WriteAsync(string.Empty);
         }

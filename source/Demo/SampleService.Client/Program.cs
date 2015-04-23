@@ -30,9 +30,21 @@ namespace SampleService.Client
             var result2 = instance.SayHelloWorld();
             var result3 = instance.Get();
 
+            Exception result4 = null;
+
+            try
+            {
+                instance.GetWithException();
+            }
+            catch (Exception ex)
+            {
+                result4 = ex;
+            }
+
             Console.WriteLine(result);
             Console.WriteLine(result2);
             Console.WriteLine(result3);
+            Console.WriteLine(result4);
             Console.ReadLine();
         }
     }

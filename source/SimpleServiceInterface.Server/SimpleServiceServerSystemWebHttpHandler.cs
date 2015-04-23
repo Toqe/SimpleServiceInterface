@@ -46,7 +46,16 @@ namespace SimpleServiceInterface.Server
 
             var resultValue = result.Result;
 
-            response.StatusCode = 200;
+            if (!result.ExceptionThrown)
+            {
+                response.StatusCode = 200;
+            }
+            else
+            {
+                response.StatusCode = 500;
+                resultValue = result.Exception;
+            }
+
             response.ContentEncoding = this.encoding;
             response.ContentType = this.contentType;
             var outputStream = response.OutputStream;
@@ -66,7 +75,7 @@ namespace SimpleServiceInterface.Server
 
         private void ReturnError(HttpResponse response, string statusDescription = null)
         {
-            response.StatusCode = 500;
+            response.StatusCode = 501;
             response.StatusDescription = statusDescription;
         }
     }
