@@ -42,11 +42,19 @@ namespace SampleService.Client
                 result5 = ex;
             }
 
+            var result6 = instance.GetAll()
+                .Where(x => x.Id < 3)
+                .Select(x => new Tuple<long, DateTime>(x.Id, x.Date2))
+                .OrderByDescending(i => i.Item1)
+                .ToList();
+
             Console.WriteLine(result);
             Console.WriteLine(result2);
             Console.WriteLine(string.Join(", ", result3));
             Console.WriteLine(result4);
             Console.WriteLine(result5);
+            Console.WriteLine("StackTrace on server: " + result5.Data["__SimpleServiceInterface__OriginalStackTrace__"]);
+            Console.WriteLine(string.Join(",", result6.Select(r => string.Format("{{ Id: '{0}', Date2: '{1}' }}", r.Item1, r.Item2))));
             Console.ReadLine();
         }
     }

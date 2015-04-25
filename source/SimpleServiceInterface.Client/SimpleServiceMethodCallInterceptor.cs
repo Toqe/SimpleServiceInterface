@@ -1,10 +1,12 @@
 ﻿using Castle.DynamicProxy;
 using Newtonsoft.Json;
+using SimpleServiceInterface.Contract;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,10 @@ namespace SimpleServiceInterface.Client
     /// </summary>
     internal class SimpleServiceMethodCallInterceptor : IInterceptor
     {
+        private readonly Type iQueryableGenericType = typeof(IQueryable<>);
+
+        private readonly Type simpleQueryableContextGenericType = typeof(SimpleQueryableContext<>);
+
         private readonly JsonSerializer jsonSerializer = new JsonSerializer();
 
         private readonly string baseUrl;
@@ -32,32 +38,44 @@ namespace SimpleServiceInterface.Client
         {
             var method = invocation.Method;
             var url = this.baseUrl + (this.baseUrl.EndsWith("/") ? string.Empty : "/") + method.Name;
-            var request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = "POST";
+            var parameterInfos = method.GetParameters();
+            var parameters = new SimpleServiceCallParameters() { Parameters = invocation.Arguments };
+            var returnType = method.ReturnType;
 
-            if (method.GetParameters().Length > 0)
+            if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == iQueryableGenericType)
             {
-                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                {
-                    this.jsonSerializer.Serialize(streamWriter, invocation.Arguments[0]);
-                    streamWriter.Flush();
-                }
+                var simpleQueryableContextType = simpleQueryableContextGenericType.MakeGenericType(returnType.GenericTypeArguments[0]);
+                var constructor = simpleQueryableContextType.GetConstructors().FirstOrDefault();
+                var instance = constructor.Invoke(new object[] { this, url, parameterInfos, parameters });
+                invocation.ReturnValue = instance;
             }
             else
             {
-                request.ContentLength = 0;
+                invocation.ReturnValue = this.Call(url, parameterInfos, parameters, returnType);
+            }
+        }
+
+        public object Call(string url, ParameterInfo[] parameterInfos, SimpleServiceCallParameters parameters, Type returnType)
+        {
+            var request = (HttpWebRequest)HttpWebRequest.Create(url);
+            request.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                this.jsonSerializer.Serialize(streamWriter, parameters);
+                streamWriter.Flush();
             }
 
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();
 
-                if (method.ReturnType != typeof(void))
+                if (returnType != typeof(void))
                 {
                     using (var streamReader = new StreamReader(response.GetResponseStream()))
                     {
-                        var result = this.jsonSerializer.Deserialize(streamReader, method.ReturnType);
-                        invocation.ReturnValue = result;
+                        var result = this.jsonSerializer.Deserialize(streamReader, returnType);
+                        return result;
                     }
                 }
             }
@@ -80,7 +98,7 @@ namespace SimpleServiceInterface.Client
                         }
                         catch (Exception)
                         {
-                            // do nothing - throw first exception
+                            // do nothing - throw exception catched in first place
                         }
 
                         if (deserializedException != null)
@@ -93,6 +111,8 @@ namespace SimpleServiceInterface.Client
 
                 throw;
             }
+
+            return null;
         }
     }
 }
