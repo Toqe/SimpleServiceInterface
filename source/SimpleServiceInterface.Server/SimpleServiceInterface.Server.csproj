@@ -56,7 +56,6 @@
     <Compile Include="SimpleQueryableStubRemover.cs" />
     <Compile Include="SimpleServiceServerBaseHandler.cs" />
     <Compile Include="SimpleServiceServerSystemWebHttpHandler.cs" />
-    <Compile Include="SimpleServiceServerSystemWebHttpHandlerWithDefaultImplementations.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

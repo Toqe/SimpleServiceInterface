@@ -11,14 +11,7 @@ namespace SimpleServiceInterface.Server.Owin
 {
     public class SimpleServiceServerOwin : SimpleServiceServerBaseHandler
     {
-        public SimpleServiceServerOwin(
-            Func<string, Type> typeFinder,
-            Func<Type, object> instanceBuilder)
-            : base(typeFinder, instanceBuilder)
-        {
-        }
-
-        public Task ProcessRequest(IOwinContext context)
+        public virtual Task ProcessRequest(IOwinContext context)
         {
             var request = context.Request;
             var response = context.Response;
@@ -62,14 +55,14 @@ namespace SimpleServiceInterface.Server.Owin
             }
         }
 
-        private Task ReturnNotFound(IOwinResponse response, string statusDescription = null)
+        protected virtual Task ReturnNotFound(IOwinResponse response, string statusDescription = null)
         {
             response.StatusCode = 404;
             response.ReasonPhrase = statusDescription;
             return response.WriteAsync(string.Empty);
         }
 
-        private Task ReturnError(IOwinResponse response, string statusDescription = null)
+        protected virtual Task ReturnError(IOwinResponse response, string statusDescription = null)
         {
             response.StatusCode = 501;
             response.ReasonPhrase = statusDescription;

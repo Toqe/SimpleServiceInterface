@@ -30,7 +30,7 @@ namespace SampleService.SelfhostedServer
         {
             public void Configuration(IAppBuilder app)
             {
-                var handler = new SimpleServiceInterface.Server.Owin.SimpleServiceServerOwin(DefaultImplementations.TypeFinder, DefaultImplementations.InstanceBuilder);
+                var handler = new SimpleServiceInterface.Server.Owin.SimpleServiceServerOwin();
 
                 app.Run(context =>
                 {

@@ -18,7 +18,7 @@ namespace SampleService.Client
         void Run()
         {
             // for SampleService.WebhostedServer
-            // var baseUri = "http://localhost:45532/";
+            // var baseUri = "http://localhost:49056/";
 
             // for SampleService.SelfhostedServer
             var baseUri = "http://localhost:8080/";

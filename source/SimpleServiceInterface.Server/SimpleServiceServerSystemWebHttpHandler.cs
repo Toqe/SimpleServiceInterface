@@ -12,19 +12,12 @@ namespace SimpleServiceInterface.Server
 {
     public class SimpleServiceServerSystemWebHttpHandler : SimpleServiceServerBaseHandler, IHttpHandler, IRequiresSessionState
     {
-        public SimpleServiceServerSystemWebHttpHandler(
-            Func<string, Type> typeFinder,
-            Func<Type, object> instanceBuilder)
-            : base(typeFinder, instanceBuilder)
-        {
-        }
-
-        public bool IsReusable
+        public virtual bool IsReusable
         {
             get { return true; }
         }
 
-        public void ProcessRequest(HttpContext context)
+        public virtual void ProcessRequest(HttpContext context)
         {
             var request = context.Request;
             var response = context.Response;
@@ -67,13 +60,13 @@ namespace SimpleServiceInterface.Server
             }
         }
 
-        private void ReturnNotFound(HttpResponse response, string statusDescription = null)
+        protected virtual void ReturnNotFound(HttpResponse response, string statusDescription = null)
         {
             response.StatusCode = 404;
             response.StatusDescription = statusDescription;
         }
 
-        private void ReturnError(HttpResponse response, string statusDescription = null)
+        protected virtual void ReturnError(HttpResponse response, string statusDescription = null)
         {
             response.StatusCode = 501;
             response.StatusDescription = statusDescription;

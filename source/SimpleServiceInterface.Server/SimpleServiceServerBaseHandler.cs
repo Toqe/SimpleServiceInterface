@@ -24,21 +24,27 @@ namespace SimpleServiceInterface.Server
 
         protected readonly JsonSerializer jsonSerializer = new JsonSerializer() { TypeNameHandling = TypeNameHandling.All };
 
-        protected readonly Func<string, Type> typeFinder;
-
-        protected readonly Func<Type, object> instanceBuilder;
-
-        public SimpleServiceServerBaseHandler(
-            Func<string, Type> typeFinder,
-            Func<Type, object> instanceBuilder)
+        public SimpleServiceServerBaseHandler()
         {
-            this.typeFinder = typeFinder;
-            this.instanceBuilder = instanceBuilder;
+            this.UrlModifier = DefaultImplementations.UrlModifier;
+            this.TypeFinder = DefaultImplementations.TypeFinder;
+            this.InstanceBuilder = DefaultImplementations.InstanceBuilder;
         }
+
+        public Func<string, string> UrlModifier { get; set; }
+
+        public Func<string, Type> TypeFinder { get; set; }
+
+        public Func<Type, object> InstanceBuilder { get; set; }
 
         protected LocateAndCallMethodResult LocateAndCallMethod(string relativeUrl, string httpMethod, Func<string, string> getParameter, Stream inputStream)
         {
             var result = new LocateAndCallMethodResult();
+
+            if (this.UrlModifier != null)
+            {
+                relativeUrl = this.UrlModifier(relativeUrl);
+            }
 
             var route = relativeUrl.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -51,7 +57,7 @@ namespace SimpleServiceInterface.Server
             var className = route[0];
             var methodName = route[1];
 
-            var type = this.typeFinder(className);
+            var type = this.TypeFinder(className);
 
             if (type == null)
             {
@@ -59,7 +65,7 @@ namespace SimpleServiceInterface.Server
                 return result;
             }
 
-            var instance = instanceBuilder(type);
+            var instance = this.InstanceBuilder(type);
 
             var method = type.GetMethod(methodName);
 
