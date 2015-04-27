@@ -37,7 +37,11 @@ namespace SimpleServiceInterface.Server
 
         public Func<Type, object> InstanceBuilder { get; set; }
 
-        protected LocateAndCallMethodResult LocateAndCallMethod(string relativeUrl, string httpMethod, Func<string, string> getParameter, Stream inputStream)
+        protected LocateAndCallMethodResult LocateAndCallMethod(
+            string relativeUrl, 
+            string httpMethod, 
+            Func<string, string> getParameter, 
+            Stream inputStream)
         {
             var result = new LocateAndCallMethodResult();
 
@@ -97,6 +101,15 @@ namespace SimpleServiceInterface.Server
                             if (parameter.ParameterType == typeof(string))
                             {
                                 parameterValues[i] = parameterStringValue;
+                            }
+                            else if (parameter.ParameterType == typeof(Guid) || parameter.ParameterType == typeof(Guid?))
+                            {
+                                Guid parsedParameter;
+
+                                if (Guid.TryParse(parameterStringValue, out parsedParameter))
+                                {
+                                    parameterValues[i] = parsedParameter;
+                                }
                             }
 
                             // TODO: Implement auto-conversion for further types
