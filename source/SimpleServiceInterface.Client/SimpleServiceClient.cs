@@ -12,15 +12,26 @@ namespace SimpleServiceInterface.Client
     {
         private readonly ProxyGenerator generator = new ProxyGenerator();
 
-        private readonly JsonSerializer jsonSerializer = new JsonSerializer() { TypeNameHandling = TypeNameHandling.All };
+        private readonly JsonSerializer defaultJsonSerializer = new JsonSerializer() { TypeNameHandling = TypeNameHandling.All };
 
         public SimpleServiceClient()
         {
+            this.DefaultWebRequestBuilder = new DefaultWebRequestBuilder().Build;
         }
+
+        public WebRequestBuilder DefaultWebRequestBuilder { get; set; }
 
         public T GetService<T>(string url) where T : class
         {
-            return this.generator.CreateInterfaceProxyWithoutTarget<T>(new SimpleServiceMethodCallInterceptor(url, this.jsonSerializer));
+            return this.GetService<T>(url, null);
+        }
+
+        public T GetService<T>(string url, WebRequestBuilder webRequestBuilder) where T : class
+        {
+            var methodCallInterceptor = new SimpleServiceMethodCallInterceptor(url);
+            methodCallInterceptor.JsonSerializer = this.defaultJsonSerializer;
+            methodCallInterceptor.WebRequestBuilder = webRequestBuilder != null ? webRequestBuilder : this.DefaultWebRequestBuilder;
+            return this.generator.CreateInterfaceProxyWithoutTarget<T>(methodCallInterceptor);
         }
     }
 }

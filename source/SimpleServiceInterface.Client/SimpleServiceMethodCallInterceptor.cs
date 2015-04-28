@@ -29,20 +29,21 @@ namespace SimpleServiceInterface.Client
 
         private readonly Type expressionType = typeof(Expression);
 
-        private readonly JsonSerializer jsonSerializer = new JsonSerializer();
+        private readonly string url;
 
-        private readonly string baseUrl;
-
-        public SimpleServiceMethodCallInterceptor(string baseUrl, JsonSerializer jsonSerializer)
+        public SimpleServiceMethodCallInterceptor(string url)
         {
-            this.baseUrl = baseUrl;
-            this.jsonSerializer = jsonSerializer;
+            this.url = url;
         }
+
+        public JsonSerializer JsonSerializer { get; set; }
+
+        public WebRequestBuilder WebRequestBuilder { get; set; }
 
         public void Intercept(IInvocation invocation)
         {
             var method = invocation.Method;
-            var url = this.baseUrl + (this.baseUrl.EndsWith("/") ? string.Empty : "/") + method.Name;
+            var url = this.url + (this.url.EndsWith("/") ? string.Empty : "/") + method.Name;
             var parameterInfos = method.GetParameters();
 
             var parameters = new SimpleServiceCallParameters() 
@@ -78,24 +79,23 @@ namespace SimpleServiceInterface.Client
 
         public object Call(string url, ParameterInfo[] parameterInfos, SimpleServiceCallParameters parameters, Type returnType)
         {
-            var request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = "POST";
+            var request = this.WebRequestBuilder(url, parameterInfos, parameters, returnType);
 
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
-                this.jsonSerializer.Serialize(streamWriter, parameters);
+                this.JsonSerializer.Serialize(streamWriter, parameters);
                 streamWriter.Flush();
             }
 
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
+                var response = request.GetResponse();
 
                 if (returnType != typeof(void))
                 {
                     using (var streamReader = new StreamReader(response.GetResponseStream()))
                     {
-                        var result = this.jsonSerializer.Deserialize(streamReader, returnType);
+                        var result = this.JsonSerializer.Deserialize(streamReader, returnType);
                         return result;
                     }
                 }
@@ -114,7 +114,7 @@ namespace SimpleServiceInterface.Client
                         {
                             using (var streamReader = new StreamReader(response.GetResponseStream()))
                             {
-                                deserializedException = this.jsonSerializer.Deserialize(streamReader, typeof(Exception)) as Exception;
+                                deserializedException = this.JsonSerializer.Deserialize(streamReader, typeof(Exception)) as Exception;
                             }
                         }
                         catch (Exception)
