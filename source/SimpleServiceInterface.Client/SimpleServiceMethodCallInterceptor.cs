@@ -5,11 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
+
+using Remote.Linq;
 
 namespace SimpleServiceInterface.Client
 {
@@ -23,6 +26,8 @@ namespace SimpleServiceInterface.Client
         private readonly Type iQueryableGenericType = typeof(IQueryable<>);
 
         private readonly Type simpleQueryableContextGenericType = typeof(SimpleQueryableContext<>);
+
+        private readonly Type expressionType = typeof(Expression);
 
         private readonly JsonSerializer jsonSerializer = new JsonSerializer();
 
@@ -39,7 +44,23 @@ namespace SimpleServiceInterface.Client
             var method = invocation.Method;
             var url = this.baseUrl + (this.baseUrl.EndsWith("/") ? string.Empty : "/") + method.Name;
             var parameterInfos = method.GetParameters();
-            var parameters = new SimpleServiceCallParameters() { Parameters = invocation.Arguments };
+
+            var parameters = new SimpleServiceCallParameters() 
+            { 
+                Parameters = invocation.Arguments, 
+                GenericParameters = invocation.GenericArguments 
+            };
+
+            for (var i = 0; i < parameters.Parameters.Length; i++)
+            {
+                var parameter = parameters.Parameters[i];
+
+                if (parameter != null && expressionType.IsAssignableFrom(parameter.GetType()))
+                {
+                    parameters.Parameters[i] = ((Expression)parameter).ToRemoteLinqExpression();
+                }
+            }
+
             var returnType = method.ReturnType;
 
             if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == iQueryableGenericType)

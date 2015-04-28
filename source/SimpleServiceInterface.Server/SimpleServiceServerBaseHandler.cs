@@ -18,6 +18,8 @@ namespace SimpleServiceInterface.Server
     {
         protected readonly Type iQueryableType = typeof(IQueryable);
 
+        protected readonly Type remoteLinqExpressionType = typeof(Remote.Linq.Expressions.Expression);
+
         protected readonly string contentType = "application/json";
 
         protected readonly Encoding encoding = Encoding.UTF8;
@@ -84,6 +86,7 @@ namespace SimpleServiceInterface.Server
             var returnType = method.ReturnType;
             bool isReturnTypeIQueryable = iQueryableType.IsAssignableFrom(returnType);
             Expression linqExpression = null;
+            Type[] genericParameters = null;
 
             if (parameters.Length > 0 || isReturnTypeIQueryable)
             {
@@ -142,13 +145,22 @@ namespace SimpleServiceInterface.Server
 
                             for (var i = 0; i < Math.Min((receivedCallParameters.Parameters ?? new object[0]).Length, parameters.Length); i++)
                             {
-                                parameterValues[i] = receivedCallParameters.Parameters[i];
+                                var parameter = receivedCallParameters.Parameters[i];
+
+                                if (parameter != null && remoteLinqExpressionType.IsAssignableFrom(parameter.GetType()))
+                                {
+                                    parameter = ((Remote.Linq.Expressions.Expression)parameter).ToLinqExpression();
+                                }
+
+                                parameterValues[i] = parameter;
                             }
 
                             if (isReturnTypeIQueryable && receivedCallParameters.QueryExpression != null)
                             {
                                 linqExpression = receivedCallParameters.QueryExpression.ToLinqExpression();
                             }
+
+                            genericParameters = receivedCallParameters.GenericParameters;
                         }
                         catch (Exception ex)
                         {
@@ -177,6 +189,11 @@ namespace SimpleServiceInterface.Server
 
             try
             {
+                if (genericParameters != null && genericParameters.Length > 0 && method.ContainsGenericParameters)
+                {
+                    method = method.MakeGenericMethod(genericParameters);
+                }
+
                 var resultValue = method.Invoke(instance, parameterValues);
 
                 if (isReturnTypeIQueryable && linqExpression != null)

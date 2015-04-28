@@ -11,6 +11,8 @@ namespace SimpleServiceInterface.Contract
     {
         public object[] Parameters { get; set; }
 
+        public Type[] GenericParameters { get; set; }
+
         public Expression QueryExpression { get; set; }
     }
 }

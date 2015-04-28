@@ -3,6 +3,7 @@ using SimpleServiceInterface.Contract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,6 +49,11 @@ namespace SampleService
         public void GetWithException()
         {
             throw new ArgumentException("You supplied no arguments!");
+        }
+
+        public TResult Do<TResult>(Expression<Func<ISampleService, TResult>> expression)
+        {
+            return expression.Compile()(this);
         }
     }
 }
