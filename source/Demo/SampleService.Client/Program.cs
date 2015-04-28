@@ -60,8 +60,9 @@ namespace SampleService.Client
                 .ToList();
             Console.WriteLine(string.Join(",", result6.Select(r => string.Format("{{ Id: '{0}', Date2: '{1}' }}", r.Item1, r.Item2))));
 
+            var name = "TestXyz!";
             Expression<Func<ISampleService, Tuple<string, SampleType>>> expressionForResult7 = 
-                (ISampleService sampleService) => new Tuple<string, SampleType>(sampleService.SayMyName("TestXyz!"), sampleService.Get());
+                (ISampleService sampleService) => new Tuple<string, SampleType>(sampleService.SayMyName(name), sampleService.Get());
             var result7 = instance.Do(expressionForResult7);
             Console.WriteLine(string.Format("{0} - {1}", result7.Item1, result7.Item2));
             
