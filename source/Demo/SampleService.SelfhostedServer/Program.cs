@@ -15,13 +15,14 @@ namespace SampleService.SelfhostedServer
     {
         static void Main(string[] args)
         {
-            // Load DLL with service
+            // Load DLL with service, the services are then automatically discovered by the ISimpleService interface
             var executingPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
             var dllFullName = Path.Combine(executingPath, "SampleService.dll");
             Assembly.LoadFrom(dllFullName);
 
             using (WebApp.Start<Startup>("http://localhost:8080"))
             {
+                Console.WriteLine("Server started. Press [ENTER] to exit.");
                 Console.ReadLine();
             }
         }

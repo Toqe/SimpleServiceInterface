@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SampleService
 {
@@ -43,12 +41,17 @@ namespace SampleService
 
         public IQueryable<SampleType> GetAll()
         {
-            return new List<SampleType>() { new SampleType() { Id = 1 }, new SampleType() { Id = 2 }, new SampleType() { Id = 3 } }.AsQueryable();
+            return new List<SampleType>()
+            {
+                new SampleType() { Id = 1, Date = new DateTime(2017, 4, 30) },
+                new SampleType() { Id = 2, Date = new DateTime(2017, 4, 30) },
+                new SampleType() { Id = 3, Date = new DateTime(2017, 5, 1) },
+            }.AsQueryable();
         }
 
         public void GetWithException()
         {
-            throw new ArgumentException("You supplied no arguments!");
+            throw new ArgumentException("This is a test exception");
         }
 
         public TResult Do<TResult>(Expression<Func<ISampleService, TResult>> expression)

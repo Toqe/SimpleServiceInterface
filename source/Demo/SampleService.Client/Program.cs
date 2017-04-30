@@ -60,11 +60,21 @@ namespace SampleService.Client
                 .ToList();
             Console.WriteLine(string.Join(",", result6.Select(r => string.Format("{{ Id: '{0}', Date2: '{1}' }}", r.Item1, r.Item2))));
 
+            var result7 = instance.GetAll()
+                .Max(x => x.Id);
+            Console.WriteLine("Max id: " + result7);
+
+            var result8 = instance.GetAll()
+                .GroupBy(x => x.Date)
+                .Select(x => new Tuple<DateTime, int>(x.Key, x.Count()))
+                .ToList();
+            Console.WriteLine(string.Join(",", result8.Select(r => "Group key " + r.Item1 + ", value count " + r.Item2)));
+
             var name = "TestXyz!";
-            Expression<Func<ISampleService, Tuple<string, SampleType>>> expressionForResult7 = 
+            Expression<Func<ISampleService, Tuple<string, SampleType>>> expressionForResult9 = 
                 (ISampleService sampleService) => new Tuple<string, SampleType>(sampleService.SayMyName(name), sampleService.Get());
-            var result7 = instance.Do(expressionForResult7);
-            Console.WriteLine(string.Format("{0} - {1}", result7.Item1, result7.Item2));
+            var result9 = instance.Do(expressionForResult9);
+            Console.WriteLine(string.Format("{0} - {1}", result9.Item1, result9.Item2));
             
             Console.ReadLine();
         }

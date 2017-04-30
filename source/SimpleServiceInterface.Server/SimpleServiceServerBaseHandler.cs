@@ -91,7 +91,7 @@ namespace SimpleServiceInterface.Server
             if (parameters.Length > 0 || isReturnTypeIQueryable)
             {
                 // TODO: Restrict GET-calls to debug mode or something like that.
-                // Usually the services provide methods, which change data, so we should make sure they are called only with POST.
+                // Usually the services provide methods which change data, so we should make sure they are called only with POST.
                 if (httpMethod == "GET")
                 {
                     for (int i = 0; i < parameters.Length; i++)
@@ -194,16 +194,21 @@ namespace SimpleServiceInterface.Server
                     method = method.MakeGenericMethod(genericParameters);
                 }
 
-                var resultValue = method.Invoke(instance, parameterValues);
+                object resultValue = method.Invoke(instance, parameterValues);
 
                 if (isReturnTypeIQueryable && linqExpression != null)
                 {
                     var resultValueType = resultValue.GetType();                  
                     var stubRemover = new SimpleQueryableStubRemover(resultValue, resultValueType);
                     var modifiedExpression = stubRemover.CopyAndModify(linqExpression);
+                    var lambdaExpression = modifiedExpression as LambdaExpression;
 
-                    var queryProvider = ((IQueryable)resultValue).Provider;
-                    resultValue = queryProvider.CreateQuery(modifiedExpression);
+                    if (lambdaExpression == null)
+                    {
+                        lambdaExpression = Expression.Lambda(modifiedExpression);
+                    }
+
+                    resultValue = lambdaExpression.Compile().DynamicInvoke();
                 }
 
                 result.Result = resultValue;
