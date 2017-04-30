@@ -21,6 +21,8 @@ namespace SampleService.Contract
 
         IQueryable<SampleType> GetAll();
 
+        IQueryable<SampleOtherType> GetAllOthers();
+
         void GetWithException();
 
         TResult Do<TResult>(Expression<Func<ISampleService, TResult>> expression);

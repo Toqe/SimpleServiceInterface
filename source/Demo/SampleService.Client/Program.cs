@@ -76,6 +76,14 @@ namespace SampleService.Client
             var result9 = instance.Do(expressionForResult9);
             Console.WriteLine(string.Format("{0} - {1}", result9.Item1, result9.Item2));
 
+            var result10 = instance.Do(
+                (ISampleService service) =>
+                (from sample in service.GetAll()
+                 join other in service.GetAllOthers() on sample.Id equals other.SampleTypeId
+                 select new Tuple<long, long>(sample.Id, other.Id)).ToList()
+                );
+            Console.WriteLine(string.Join(",", result10.Select(r => "id " + r.Item1 + ", other id " + r.Item2)));
+
             Console.WriteLine();
             Console.WriteLine("All tests finished. Press [ENTER] to exit.");
             Console.ReadLine();

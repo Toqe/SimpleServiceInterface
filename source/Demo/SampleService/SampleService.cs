@@ -49,6 +49,16 @@ namespace SampleService
             }.AsQueryable();
         }
 
+        public IQueryable<SampleOtherType> GetAllOthers()
+        {
+            return new List<SampleOtherType>()
+            {
+                new SampleOtherType() { Id = 42, SampleTypeId = 1  },
+                new SampleOtherType() { Id = 80, SampleTypeId = 2 },
+                new SampleOtherType() { Id = 95212, SampleTypeId = 2 },
+            }.AsQueryable();
+        }
+
         public void GetWithException()
         {
             throw new ArgumentException("This is a test exception");

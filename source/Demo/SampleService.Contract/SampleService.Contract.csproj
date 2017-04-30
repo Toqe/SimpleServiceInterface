@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ISampleService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleOtherType.cs" />
     <Compile Include="SampleType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
