@@ -41,7 +41,7 @@ But in the end, all you want to do is write C# code in your Microservice B like 
 ```C#
 sampleService.GetAll()
     .Where(x => x.Id < 3)
-    .Select(x => new Tuple<long, DateTime>(x.Id, x.Date2))
+    .Select(x => new Tuple<long, DateTime>(x.Id, x.Date))
     .OrderByDescending(i => i.Item1)
     .ToList();
 ```
