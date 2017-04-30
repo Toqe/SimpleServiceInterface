@@ -75,7 +75,9 @@ namespace SampleService.Client
                 (ISampleService sampleService) => new Tuple<string, SampleType>(sampleService.SayMyName(name), sampleService.Get());
             var result9 = instance.Do(expressionForResult9);
             Console.WriteLine(string.Format("{0} - {1}", result9.Item1, result9.Item2));
-            
+
+            Console.WriteLine();
+            Console.WriteLine("All tests finished. Press [ENTER] to exit.");
             Console.ReadLine();
         }
     }
