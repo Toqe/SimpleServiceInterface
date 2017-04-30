@@ -35,7 +35,7 @@ The most naive way would be to just send all the data as a list to the client an
 
 In a usual webservice, you would define different methods for different purposes or sophisticated query and result objects. But that can lead to regular additions or changes to the interface, which can (at least temporarily) break your application.
 
-Another option is (OData)[http://www.odata.org/], but it comes with the handicap of not being fully LINQ compatible, so you may have to rewrite your queries. (To be fair: If you want to exchange data between different platforms and programming languages, OData is still the best choice for you.)
+Another option is [OData](http://www.odata.org/), but it comes with the handicap of not being fully LINQ compatible, so you may have to rewrite your queries. (To be fair: If you want to exchange data between different platforms and programming languages, OData is still the best choice for you.)
 
 But in the end, all you want to do is write C# code in your Microservice B like this:
 ```C#
